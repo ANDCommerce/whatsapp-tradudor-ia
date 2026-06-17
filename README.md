@@ -9,6 +9,7 @@ Clique no botão verde **Code** no topo desta página e selecione **Download ZIP
 ```bash
 git clone https://github.com/ANDCommerce/whatsapp-tradudor-ia.git
 ```
+<img width="484" height="415" alt="image" src="https://github.com/user-attachments/assets/54f2fc36-e98f-4683-9caf-679a88a85153" />
 
 Depois, **descompacte a pasta** (caso tenha baixado o ZIP) em um local de fácil acesso no seu computador.
 
