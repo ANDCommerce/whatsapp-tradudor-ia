@@ -595,13 +595,22 @@ function getEmojiButton() {
 
 // Function to get the insertion point in the chat footer (to the right of the emoji button, inside the rounded bar)
 function getFooterInsertionPoint() {
+  // 1. Primary choice: find the input box wrapper and insert before it.
+  // This places our button to the left of the input field, which is right next to the emoji button,
+  // directly inside the bottom bar flex row. This is highly robust and avoids third-party wrapper conflicts.
+  const inputWrapper = document.querySelector('[data-testid="compose-box"] .x1n2onr6.xh8yej3.xjdcl3y') || 
+                       getWhatsAppInput()?.closest('.xjdcl3y') ||
+                       getWhatsAppInput()?.parentElement;
+                       
+  if (inputWrapper && inputWrapper.parentElement) {
+    return { parent: inputWrapper.parentElement, reference: inputWrapper };
+  }
+
+  // 2. Fallback: find the emoji button and insert after its top-level sibling
   const emojiIcon = getEmojiButton();
   if (emojiIcon) {
-    // We want the inner container of the rounded bar as the row/parent.
-    // The inner container usually has class .x100vrsf or is a direct child of the tabindex="-1" rounded container.
-    const row = emojiIcon.closest('.x100vrsf') || 
-                emojiIcon.closest('[tabindex="-1"] > div') || 
-                emojiIcon.closest('[tabindex="-1"]') || 
+    const row = emojiIcon.closest('[tabindex="-1"]') || 
+                emojiIcon.closest('[data-testid="compose-box"] > div') ||
                 emojiIcon.parentElement;
                 
     if (row) {
@@ -610,19 +619,9 @@ function getFooterInsertionPoint() {
         current = current.parentElement;
       }
       if (current) {
-        // Return row and its next sibling (so it gets inserted after the emoji container wrapper)
         return { parent: row, reference: current.nextSibling };
       }
     }
-  }
-
-  // Fallback: find the input box wrapper and insert before it
-  const inputWrapper = document.querySelector('[data-testid="compose-box"] .x1n2onr6.xh8yej3.xjdcl3y') || 
-                       getWhatsAppInput()?.closest('.xjdcl3y') ||
-                       getWhatsAppInput()?.parentElement;
-                       
-  if (inputWrapper && inputWrapper.parentElement) {
-    return { parent: inputWrapper.parentElement, reference: inputWrapper };
   }
 
   return null;
@@ -715,8 +714,10 @@ function injectFooterTranslateButton() {
 
 // Click handler for footer translation button
 async function handleFooterButtonClick(e) {
-  e.preventDefault();
-  e.stopPropagation();
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
   
   self.logger.info('=== FOOTER TRANSLATE BUTTON CLICKED ===');
 
@@ -1172,6 +1173,19 @@ document.addEventListener('click', async (e) => {
     const button = document.getElementById('wa-translator-button');
     if (!button || !button.contains(e.target)) {
       await toggleDropdown(false);
+    }
+  }
+});
+
+// Keyboard shortcut Alt + T to translate outgoing message
+document.addEventListener('keydown', async (e) => {
+  if (e.altKey && (e.key === 't' || e.key === 'T' || e.keyCode === 84)) {
+    const inputElement = getWhatsAppInput();
+    if (inputElement) {
+      e.preventDefault();
+      e.stopPropagation();
+      self.logger.info('Alt+T keyboard shortcut triggered translation');
+      await handleFooterButtonClick();
     }
   }
 });
