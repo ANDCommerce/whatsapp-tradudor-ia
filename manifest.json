@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "WhatsApp Tradutor IA",
+  "version": "1.0.0",
+  "description": "Traduza mensagens do WhatsApp usando IA",
+  "permissions": ["storage", "alarms", "tabs", "clipboardWrite"],
+  "host_permissions": [
+    "https://api.openai.com/*",
+    "https://generativelanguage.googleapis.com/*",
+    "https://api.groq.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://web.whatsapp.com/*"],
+      "js": [
+        "utils/constants.js",
+        "utils/logger.js",
+        "utils/language-detector.js",
+        "content/chat-id.js",
+        "content/whatsapp-observer.js",
+        "content/translator.js"
+      ],
+      "css": ["styles/translator.css"]
+    }
+  ],
+  "background": {
+    "service_worker": "background/service-worker.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html"
+  }
+}

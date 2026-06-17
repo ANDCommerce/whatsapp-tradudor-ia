@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <h1>WhatsApp Tradutor</h1>
+  
+  <div class="section">
+    <h2>Chaves das APIs</h2>
+    
+    <label>
+      Chave da API OpenAI <a href="https://platform.openai.com/api-keys" target="_blank"><i class="fa fa-external-link"></i></a>
+      <input type="password" id="openaiKey" placeholder="sk-...">
+    </label>
+    
+    <label>
+      Chave da API Gemini <a href="https://aistudio.google.com/app/apikey" target="_blank"><i class="fa fa-external-link"></i></a>
+      <input type="password" id="geminiKey" placeholder="...">
+    </label>
+    
+    <label>
+      Chave da API Groq <a href="https://console.groq.com/keys" target="_blank"><i class="fa fa-external-link"></i></a>
+      <input type="password" id="groqKey" placeholder="gsk_...">
+    </label>
+  </div>
+  
+  <div class="section">
+    <h2>Configurações</h2>
+    
+    <div class="checkbox-container">
+      <span>Ativar Cache</span>
+      <label class="switch">
+        <input type="checkbox" id="enableCache">
+        <span class="slider"></span>
+      </label>
+    </div>
+    
+    <div class="checkbox-container">
+      <span>Detectar Idioma Automaticamente</span>
+      <label class="switch">
+        <input type="checkbox" id="autoDetect">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+  
+  <button id="saveBtn">Salvar Configurações</button>
+  
+  <script src="popup.js"></script>
+</body>
+</html>

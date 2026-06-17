@@ -1,0 +1,371 @@
+/* WhatsApp Translator Styles */
+
+/* Dropdown styles - Modern 2026 Theme */
+.wa-translator-dropdown {
+  position: fixed;
+  z-index: 10000;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(224, 224, 224, 0.6);
+  border-radius: 16px;
+  box-shadow: 0 12px 36px -4px rgba(11, 27, 38, 0.12), 0 0 1px rgba(0, 0, 0, 0.05);
+  min-width: 310px;
+  display: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  animation: wa-popup-fade-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes wa-popup-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.wa-translator-dropdown-content {
+  padding: 20px;
+}
+
+.wa-translator-dropdown-content h3 {
+  margin: 0 0 18px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111b21;
+  letter-spacing: -0.2px;
+}
+
+.wa-translator-select-group {
+  margin-bottom: 16px;
+}
+
+.wa-translator-select-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #54656f;
+  margin-bottom: 6px;
+}
+
+/* Custom Switch Toggle styling */
+.wa-translator-switch-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.wa-translator-switch-label {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #54656f;
+  max-width: 220px;
+  line-height: 1.35;
+}
+
+.wa-translator-switch {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.wa-translator-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.wa-translator-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #d1d7db;
+  transition: .2s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 34px;
+}
+
+.wa-translator-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: .2s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+.wa-translator-switch input:checked + .wa-translator-slider {
+  background-color: #46459C;
+}
+
+.wa-translator-switch input:checked + .wa-translator-slider:before {
+  transform: translateX(18px);
+}
+
+/* Dark mode overrides for dropdown */
+.dark .wa-translator-dropdown {
+  background: rgba(32, 44, 51, 0.9);
+  border-color: rgba(55, 66, 72, 0.6);
+  box-shadow: 0 16px 40px -4px rgba(0, 0, 0, 0.35), 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.dark .wa-translator-dropdown-content h3 {
+  color: #e9edef;
+}
+
+.dark .wa-translator-switch-label {
+  color: #aebac1;
+}
+
+.dark .wa-translator-slider {
+  background-color: #374248;
+}
+
+.dark .wa-translator-switch input:checked + .wa-translator-slider {
+  background-color: #8a88f5;
+}
+
+.dark .wa-translator-select-group label {
+  color: #aebac1;
+}
+
+/* Translation preview styles */
+.wa-translator-preview {
+  padding: 12px;
+  background: #F5F5FF;
+  border-top: 3px solid #46459C;
+  margin-bottom: 0;
+}
+
+.wa-translator-preview-original,
+.wa-translator-preview-translated {
+  margin-bottom: 8px;
+}
+
+.wa-translator-preview-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #46459C;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.wa-translator-preview-original-text {
+  font-size: 14px;
+  color: #666;
+  padding: 8px;
+  background: #fff;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  min-height: 40px;
+}
+
+.wa-translator-preview-translated-text {
+  width: 100%;
+  min-height: 60px;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #46459C;
+  border-radius: 6px;
+  resize: vertical;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.wa-translator-preview-translated-text:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(70, 69, 156, 0.2);
+}
+
+/* Spinner Animation */
+@keyframes wa-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.wa-translator-spinning {
+  animation: wa-spin 1s linear infinite;
+}
+
+/* Message Translation Card and Buttons */
+.wa-translator-message-card {
+  background: #F5F5FF;
+  border-left: 3px solid #46459C;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 6px;
+  font-size: 14.2px;
+  color: #111b21;
+  word-break: break-word;
+  display: block;
+  clear: both;
+}
+
+/* Dark mode override for the message card if parent is dark themed */
+.dark .wa-translator-message-card {
+  background: #202c33;
+  color: #e9edef;
+  border-left: 3px solid #6867d4;
+}
+
+.wa-translator-message-btn {
+  font-size: 12px;
+  color: #46459C;
+  cursor: pointer;
+  display: inline-block;
+  margin-top: 4px;
+  text-decoration: underline;
+  font-weight: bold;
+  user-select: none;
+}
+
+.dark .wa-translator-message-btn {
+  color: #8a88f5;
+}
+
+.wa-translator-message-btn:hover {
+  color: #353480;
+}
+
+.wa-translator-message-loading {
+  font-size: 12px;
+  color: #667781;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* Footer Button Styling (Light and Dark Mode) */
+.wa-translator-footer-btn {
+  color: #54656f !important;
+}
+
+.dark .wa-translator-footer-btn {
+  color: #aebac1 !important;
+}
+
+.wa-translator-footer-btn:hover {
+  background-color: var(--background-hover, rgba(11, 27, 38, 0.05)) !important;
+}
+
+/* Hover Translate Button next to message bubble */
+.wa-translator-hover-btn {
+  background-color: #ffffff !important;
+  border: 1px solid #e9edef !important;
+  border-radius: 16px !important;
+  padding: 4px 12px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #54656f !important;
+  cursor: pointer !important;
+  box-shadow: 0 1px 1px rgba(11, 27, 38, 0.08) !important;
+  margin-left: 24px !important;
+  margin-right: 6px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 28px !important;
+  align-self: center !important;
+  transition: all 0.15s ease !important;
+  user-select: none !important;
+}
+
+.wa-translator-hover-btn:hover {
+  background-color: #f0f2f5 !important;
+  color: #111b21 !important;
+  border-color: #d1d7db !important;
+}
+
+/* Dark mode override for hover translate button */
+.dark .wa-translator-hover-btn {
+  background-color: #202c33 !important;
+  border-color: #374248 !important;
+  color: #aebac1 !important;
+}
+
+.dark .wa-translator-hover-btn:hover {
+  background-color: #2a3942 !important;
+  color: #e9edef !important;
+  border-color: #4a555a !important;
+}
+
+/* Input group styling for select elements */
+.wa-translator-input-group {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.wa-translator-input-group:focus-within {
+  border-color: #46459C;
+  box-shadow: 0 0 0 2px rgba(70, 69, 156, 0.15);
+}
+
+.wa-translator-input-group-text {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  background-color: #f0f2f5;
+  color: #54656f;
+  border-right: 1px solid #e0e0e0;
+  user-select: none;
+}
+
+.wa-translator-input-group select {
+  flex: 1;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 8px 12px;
+  font-size: 14px;
+  background: #fff;
+  color: #111b21;
+  cursor: pointer;
+  outline: none !important;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2354656f'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 20px;
+  padding-right: 30px;
+}
+
+/* Dark mode overrides */
+.dark .wa-translator-input-group {
+  border-color: #374248;
+  background: #111b21;
+}
+
+.dark .wa-translator-input-group:focus-within {
+  border-color: #8a88f5;
+  box-shadow: 0 0 0 2px rgba(138, 136, 245, 0.25);
+}
+
+.dark .wa-translator-input-group-text {
+  background-color: #202c33;
+  color: #aebac1;
+  border-right-color: #374248;
+}
+
+.dark .wa-translator-input-group select {
+  background: #111b21;
+  color: #e9edef;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23aebac1'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+}
