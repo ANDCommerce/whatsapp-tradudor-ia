@@ -52,6 +52,8 @@ Para facilitar o acesso, clique no ícone de quebra-cabeça (🧩) ao lado da ba
 
 ---
 
+<img width="1284" height="917" alt="image" src="https://github.com/user-attachments/assets/e9d67c8c-0604-4eea-9eb6-3993945818ae" />
+
 ### ❓ Problemas comuns
 
 - **Erro "Manifest file is missing or unreadable"**: verifique se você selecionou a pasta correta, que deve conter o arquivo `manifest.json` na raiz.
