@@ -805,7 +805,14 @@ function isIncomingMessage(msgContainer) {
     return false;
   }
 
-  // 4. Fallback for consecutive messages: check for status ticks (only outgoing messages have ticks/status icons)
+  // 4. Fallback: Check computed alignment of the bubble container itself
+  // In WhatsApp's flex column row layout, outgoing messages have align-self: flex-end.
+  const msgStyle = window.getComputedStyle(msgContainer);
+  if (msgStyle.alignSelf === 'flex-end' || msgStyle.float === 'right') {
+    return false; // Outgoing
+  }
+
+  // 5. Fallback for consecutive messages: check for status ticks (only outgoing messages have ticks/status icons)
   const hasTicks = msgContainer.querySelector([
     '[data-icon="msg-check"]',
     '[data-icon="msg-dblcheck"]',
@@ -821,7 +828,7 @@ function isIncomingMessage(msgContainer) {
     return false; // Outgoing
   }
 
-  // 5. Fallback for consecutive messages: check computed flexbox alignment of row (outgoing is aligned right/flex-end)
+  // 6. Fallback for consecutive messages: check computed flexbox alignment of row (outgoing is aligned right/flex-end)
   const row = msgContainer.closest('[data-id]') || msgContainer.closest('.focusable-list-item');
   if (row) {
     const style = window.getComputedStyle(row);
@@ -830,7 +837,7 @@ function isIncomingMessage(msgContainer) {
     }
   }
 
-  // If no ticks and not aligned to the right, we default to incoming (since system messages are filtered out by text/trigger existence check)
+  // If no ticks, aligned to the left, and no outgoing traits, it's incoming
   return true;
 }
 
@@ -879,13 +886,13 @@ function processMessages() {
 
     if (currentChatSettings.autoTranslate) {
       // Translate automatically
-      performMessageTranslation(msg, textEl, text);
+      performMessageTranslation(msg, textEl, text, false);
     }
   });
 }
 
 // Perform translation of an incoming message and append card
-async function performMessageTranslation(msgContainer, textEl, text) {
+async function performMessageTranslation(msgContainer, textEl, text, isManual = false) {
   // Ensure we don't add multiple translation cards to the same message bubble
   if (msgContainer.querySelector('.wa-translator-message-card')) return;
   
@@ -917,10 +924,16 @@ async function performMessageTranslation(msgContainer, textEl, text) {
     loadingCard.remove();
     
     if (response.success && response.translation) {
-      const translationCard = document.createElement('div');
-      translationCard.className = 'wa-translator-message-card';
-      translationCard.textContent = `└ ${response.translation}`;
-      appendTarget.appendChild(translationCard);
+      // Check if translation is identical to original text (ignoring case, whitespace, and punctuation)
+      const cleanOriginal = text.trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?¿¡]/g,"").replace(/\s+/g, " ");
+      const cleanTranslation = response.translation.trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?¿¡]/g,"").replace(/\s+/g, " ");
+      
+      if (isManual || cleanOriginal !== cleanTranslation) {
+        const translationCard = document.createElement('div');
+        translationCard.className = 'wa-translator-message-card';
+        translationCard.textContent = `└ ${response.translation}`;
+        appendTarget.appendChild(translationCard);
+      }
     } else {
       self.logger.error('Failed to translate incoming message:', response.error);
       const errorCard = document.createElement('div');
@@ -1087,7 +1100,7 @@ function injectHoverTranslateButtons() {
     hoverBtn.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      performMessageTranslation(msgContainer, textEl, text);
+      performMessageTranslation(msgContainer, textEl, text, true);
       hoverBtn.remove();
     });
 
