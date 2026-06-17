@@ -9,6 +9,7 @@ Clique no botão verde **Code** no topo desta página e selecione **Download ZIP
 ```bash
 git clone https://github.com/ANDCommerce/whatsapp-tradudor-ia.git
 ```
+
 <img width="484" height="415" alt="image" src="https://github.com/user-attachments/assets/54f2fc36-e98f-4683-9caf-679a88a85153" />
 
 Depois, **descompacte a pasta** (caso tenha baixado o ZIP) em um local de fácil acesso no seu computador.
@@ -25,7 +26,11 @@ chrome://extensions/
 
 No canto superior direito da página, você verá uma chave de ativação chamada **"Modo do desenvolvedor"**. Clique para ativá-la.
 
+<img width="1916" height="119" alt="image" src="https://github.com/user-attachments/assets/8eaa1874-2acf-4044-aa65-7a275f98df0e" />
+
 ### 4º Clique em "Carregar sem compactação"
+
+<img width="550" height="117" alt="image" src="https://github.com/user-attachments/assets/3a5d2bdc-5f72-424f-a172-becc91394092" />
 
 Com o Modo do Desenvolvedor ativado, novos botões aparecerão no topo da página. Clique em **"Carregar sem compactação"** (em inglês, *"Load unpacked"*).
 
@@ -40,6 +45,8 @@ Uma janela do explorador de arquivos será aberta. Navegue até a pasta onde voc
 A extensão será instalada e aparecerá na sua lista de extensões, já habilitada. Você também pode visualizar o ícone dela clicando no ícone de **quebra-cabeça (🧩)** na barra de ferramentas do Chrome.
 
 ### 7º (Opcional) Fixe o ícone na barra de ferramentas
+
+<img width="386" height="289" alt="image" src="https://github.com/user-attachments/assets/186e5417-40d4-4566-9db7-d1a5b2a65244" />
 
 Para facilitar o acesso, clique no ícone de quebra-cabeça (🧩) ao lado da barra de endereço e depois no ícone de **pin/alfinete** ao lado do nome da extensão.
 
