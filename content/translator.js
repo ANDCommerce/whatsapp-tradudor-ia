@@ -167,18 +167,82 @@ function attachSettingsListeners() {
 // Get current chat ID — definido em content/chat-id.js
 
 // Load settings for current chat
+// Load settings for current chat
 async function loadCurrentChatSettings() {
   const chatId = getCurrentChatId();
+  
+  // Reset settings synchronously if the chat ID changed or is null.
+  // This prevents race conditions where mutations for the new chat are processed
+  // using the previous chat's settings while the settings are loading asynchronously.
+  if (!chatId || chatId !== currentChatId) {
+    currentChatSettings = { ...DEFAULT_CHAT_SETTINGS };
+    currentChatId = chatId;
+    
+    // Reset UI states immediately to defaults
+    const enabledCheckbox = document.getElementById('wa-translator-enabled');
+    const sourceSelect = document.getElementById('wa-translator-source-lang');
+    const targetSelect = document.getElementById('wa-translator-target-lang');
+    const autoTranslateCheckbox = document.getElementById('wa-translator-auto-translate');
+    
+    if (enabledCheckbox) enabledCheckbox.checked = false;
+    if (sourceSelect) sourceSelect.value = 'en';
+    if (targetSelect) targetSelect.value = 'pt';
+    if (autoTranslateCheckbox) autoTranslateCheckbox.checked = false;
+    
+    // Clear dropdown dataset chatId
+    const dropdown = document.getElementById('wa-translator-dropdown');
+    if (dropdown) {
+      dropdown.removeAttribute('data-chat-id');
+    }
+  }
+
   if (!chatId) {
     self.logger.info('Chat ID não detectado — configurações não carregadas (inicialização)');
     return;
   }
 
-  currentChatId = chatId;
-  
+  // Set the dropdown dataset chatId so saving knows which chat this dropdown currently represents
+  const dropdown = document.getElementById('wa-translator-dropdown');
+  if (dropdown) {
+    dropdown.dataset.chatId = chatId;
+  }
+
   const result = await chrome.storage.local.get(['settings']);
+  
+  // Guard clause: if currentChatId changed (a newer load has started), abort.
+  if (currentChatId !== chatId) {
+    self.logger.info('Uma nova requisição de carregamento foi iniciada. Abortando este carregamento.');
+    return;
+  }
+
   const allSettings = result.settings || {};
-  currentChatSettings = allSettings.chatSettings?.[chatId] || { ...DEFAULT_CHAT_SETTINGS };
+  let chatSettings = allSettings.chatSettings?.[chatId];
+  
+  // Migration fallback: if not found by JID, try fallback contact:Name
+  if (!chatSettings && !chatId.startsWith('contact:')) {
+    const header = document.querySelector('[data-testid="conversation-header"]');
+    if (header) {
+      const titleEl =
+        header.querySelector('[data-testid="conversation-info-header-chat-title"]') ||
+        header.querySelector('[data-testid="conversation-info-header-chat-title"] span') ||
+        header.querySelector('span[dir="auto"][title]');
+
+      const title = titleEl?.getAttribute('title') || titleEl?.textContent?.trim();
+      if (title) {
+        const fallbackId = `contact:${title}`;
+        chatSettings = allSettings.chatSettings?.[fallbackId];
+        if (chatSettings) {
+          self.logger.info(`Migrando configurações de ${fallbackId} para ${chatId}`);
+          // Migrate in storage
+          if (!allSettings.chatSettings) allSettings.chatSettings = {};
+          allSettings.chatSettings[chatId] = chatSettings;
+          chrome.storage.local.set({ settings: allSettings });
+        }
+      }
+    }
+  }
+
+  currentChatSettings = chatSettings || { ...DEFAULT_CHAT_SETTINGS };
 
   // Update UI (se dropdown já existir)
   const enabledCheckbox = document.getElementById('wa-translator-enabled');
@@ -196,7 +260,9 @@ async function loadCurrentChatSettings() {
 
 // Save settings for current chat
 async function saveCurrentChatSettings() {
-  const chatId = getCurrentChatId();
+  const dropdown = document.getElementById('wa-translator-dropdown');
+  const chatId = dropdown?.dataset.chatId || currentChatId || getCurrentChatId();
+  
   if (!chatId) {
     self.logger.info('Chat ID não detectado — configurações não salvas (sem conversa aberta)');
     return;
@@ -656,6 +722,11 @@ const LOADING_ICON_HTML = `
 
 // Function to inject translate button next to send button in the footer
 function injectFooterTranslateButton() {
+  const activeChatId = getCurrentChatId();
+  if (!activeChatId || activeChatId !== currentChatId) {
+    return;
+  }
+
   // Check if translation is enabled for this chat
   if (!currentChatSettings.enabled) {
     // If not enabled, make sure any existing footer button is removed
@@ -844,8 +915,17 @@ function isIncomingMessage(msgContainer) {
 
 // Process messages inside the active chat (incoming messages)
 function processMessages() {
-  // If translation is not enabled for this conversation, we don't translate
+  const activeChatId = getCurrentChatId();
+  if (!activeChatId || activeChatId !== currentChatId) {
+    return;
+  }
+
+  // If translation is not enabled for this conversation, clean up and return
   if (!currentChatSettings.enabled) {
+    const activeCards = document.querySelectorAll('.wa-translator-message-card');
+    activeCards.forEach((card) => card.remove());
+    const activeLoading = document.querySelectorAll('.wa-translator-message-loading');
+    activeLoading.forEach((load) => load.remove());
     return;
   }
 
@@ -990,6 +1070,11 @@ function findMsgContainerFromTrigger(trigger) {
 
 // Inject translate button next to the hover reaction/context menu buttons in the message container
 function injectHoverTranslateButtons() {
+  const activeChatId = getCurrentChatId();
+  if (!activeChatId || activeChatId !== currentChatId) {
+    return;
+  }
+
   const HOVER_TRIGGER_SELECTORS = [
     '[data-testid="msg-react"]',
     '[data-testid="react-button"]',
