@@ -4,6 +4,45 @@ const PROVIDERS = {
   groq: self.translateWithGroq
 };
 
+self.listProviderModels = async function(provider, apiKey) {
+  if (!PROVIDERS[provider]) throw new Error('Provedor inválido.');
+  if (!apiKey || !apiKey.trim()) throw new Error('Informe uma chave de API válida.');
+
+  const endpoints = {
+    openai: 'https://api.openai.com/v1/models',
+    gemini: `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey.trim())}`,
+    groq: 'https://api.groq.com/openai/v1/models'
+  };
+  const headers = provider === 'gemini'
+    ? {}
+    : { Authorization: `Bearer ${apiKey.trim()}` };
+  const response = await fetch(endpoints[provider], { headers });
+  const data = await response.json();
+
+  if (!response.ok) {
+    const message = data.error?.message || data.error?.type || `HTTP ${response.status}`;
+    throw new Error(`Falha ao consultar modelos: ${message}`);
+  }
+
+  let models = (data.data || data.models || []).map(model => {
+    const id = model.id || model.name || '';
+    return id.replace(/^models\//, '');
+  });
+
+  if (provider === 'openai') {
+    models = models.filter(model => /^gpt-/i.test(model) && !/(audio|realtime|transcribe|tts|image|embedding|moderation)/i.test(model));
+  } else if (provider === 'gemini') {
+    models = (data.models || [])
+      .filter(model => model.supportedGenerationMethods?.includes('generateContent'))
+      .map(model => model.name.replace(/^models\//, ''));
+  } else {
+    models = models.filter(model => !/(whisper|guard|embedding|safeguard)/i.test(model));
+  }
+
+  if (!models.length) throw new Error('A API não retornou modelos de geração de texto disponíveis.');
+  return [...new Set(models)].sort();
+};
+
 self.translateText = async function(text, sourceLang, targetLang) {
   const settings = await self.getSettings();
   const normalizedText = self.normalizeText(text);
@@ -42,12 +81,15 @@ self.translateText = async function(text, sourceLang, targetLang) {
     return `[TRADUÇÃO TESTE] ${text}`;
   }
 
-  let errors = [];
+  const errors = [];
   for (const providerName of settings.fallbackOrder) {
     let apiKey = settings.apiKeys[providerName];
     if (apiKey) apiKey = apiKey.trim();
-    if (!apiKey || apiKey === '') {
-      errors.push(`${providerName}: Nenhuma chave de API configurada`);
+    if (!apiKey) continue;
+
+    const model = settings.selectedModels[providerName];
+    if (!model) {
+      errors.push(`${providerName}: Selecione um modelo nas configurações`);
       continue;
     }
 
@@ -59,7 +101,8 @@ self.translateText = async function(text, sourceLang, targetLang) {
         sourceLang,
         targetLang,
         apiKey,
-        timeout
+        timeout,
+        model
       );
 
       if (settings.enableCache) {

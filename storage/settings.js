@@ -5,6 +5,8 @@ const DEFAULT_SETTINGS = {
     groq: ''
   },
   fallbackOrder: ['openai', 'gemini', 'groq'],
+  selectedModels: { openai: '', gemini: '', groq: '' },
+  modelCatalog: { openai: [], gemini: [], groq: [] },
   providerTimeouts: {
     openai: 10000,
     gemini: 10000,
@@ -17,7 +19,16 @@ const DEFAULT_SETTINGS = {
 
 self.getSettings = async function() {
   const result = await chrome.storage.local.get(['settings']);
-  return { ...DEFAULT_SETTINGS, ...result.settings };
+  const settings = result.settings || {};
+  return {
+    ...DEFAULT_SETTINGS,
+    ...settings,
+    apiKeys: { ...DEFAULT_SETTINGS.apiKeys, ...settings.apiKeys },
+    selectedModels: { ...DEFAULT_SETTINGS.selectedModels, ...settings.selectedModels },
+    modelCatalog: { ...DEFAULT_SETTINGS.modelCatalog, ...settings.modelCatalog },
+    providerTimeouts: { ...DEFAULT_SETTINGS.providerTimeouts, ...settings.providerTimeouts },
+    chatSettings: { ...DEFAULT_SETTINGS.chatSettings, ...settings.chatSettings }
+  };
 };
 
 self.saveSettings = async function(settings) {

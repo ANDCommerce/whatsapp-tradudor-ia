@@ -16,16 +16,31 @@
       Chave da API OpenAI <a href="https://platform.openai.com/api-keys" target="_blank"><i class="fa fa-external-link"></i></a>
       <input type="password" id="openaiKey" placeholder="sk-...">
     </label>
+    <div class="model-controls">
+      <button type="button" class="load-models" data-provider="openai" title="Carregar modelos OpenAI" aria-label="Carregar modelos OpenAI">Carregar modelos</button>
+      <select id="openaiModel" aria-label="Modelo OpenAI" disabled><option value="">Informe a chave e carregue os modelos</option></select>
+      <span id="openaiModelStatus" class="model-status" role="status"></span>
+    </div>
     
     <label>
       Chave da API Gemini <a href="https://aistudio.google.com/app/apikey" target="_blank"><i class="fa fa-external-link"></i></a>
       <input type="password" id="geminiKey" placeholder="...">
     </label>
+    <div class="model-controls">
+      <button type="button" class="load-models" data-provider="gemini" title="Carregar modelos Gemini" aria-label="Carregar modelos Gemini">Carregar modelos</button>
+      <select id="geminiModel" aria-label="Modelo Gemini" disabled><option value="">Informe a chave e carregue os modelos</option></select>
+      <span id="geminiModelStatus" class="model-status" role="status"></span>
+    </div>
     
     <label>
       Chave da API Groq <a href="https://console.groq.com/keys" target="_blank"><i class="fa fa-external-link"></i></a>
       <input type="password" id="groqKey" placeholder="gsk_...">
     </label>
+    <div class="model-controls">
+      <button type="button" class="load-models" data-provider="groq" title="Carregar modelos Groq" aria-label="Carregar modelos Groq">Carregar modelos</button>
+      <select id="groqModel" aria-label="Modelo Groq" disabled><option value="">Informe a chave e carregue os modelos</option></select>
+      <span id="groqModelStatus" class="model-status" role="status"></span>
+    </div>
   </div>
   
   <div class="section">

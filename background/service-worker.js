@@ -33,6 +33,13 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'listModels') {
+    self.listProviderModels(request.provider, request.apiKey)
+      .then(models => sendResponse({ success: true, models }))
+      .catch(error => sendResponse({ success: false, error: error.message }));
+    return true;
+  }
+
   if (request.action === 'translate') {
     self.logger.info('Background service received translate request:', {
       text: request.text.substring(0, 50),

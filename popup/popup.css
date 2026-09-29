@@ -47,6 +47,56 @@ label:last-child {
   margin-bottom: 0;
 }
 
+.model-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 3fr);
+  align-items: stretch;
+  gap: 6px;
+  margin: -4px 0 14px;
+}
+
+.load-models {
+  width: 100%;
+  grid-column: 2;
+  grid-row: 1;
+  box-sizing: border-box;
+  padding: 6px 4px;
+  background: #334155;
+  box-shadow: none;
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.load-models:hover {
+  background: #1e293b;
+  box-shadow: none;
+}
+
+.model-controls select {
+  width: 100%;
+  min-width: 0;
+  grid-column: 1;
+  grid-row: 1;
+  box-sizing: border-box;
+  margin-top: 0;
+  padding: 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #fff;
+  color: #0f172a;
+  font-size: 12px;
+}
+
+.model-status {
+  display: block;
+  grid-column: 1 / -1;
+  min-height: 14px;
+  margin-top: 4px;
+  color: #475569;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
 input[type="password"] {
   width: 100%;
   padding: 10px 12px;

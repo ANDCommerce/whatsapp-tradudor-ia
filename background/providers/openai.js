@@ -1,4 +1,4 @@
-self.translateWithOpenAI = async function(text, sourceLang, targetLang, apiKey, timeout) {
+self.translateWithOpenAI = async function(text, sourceLang, targetLang, apiKey, timeout, model) {
   const prompt = self.buildTranslationPrompt(text, sourceLang, targetLang);
 
   const controller = new AbortController();
@@ -12,7 +12,7 @@ self.translateWithOpenAI = async function(text, sourceLang, targetLang, apiKey, 
         'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model,
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.3
       }),
@@ -21,11 +21,10 @@ self.translateWithOpenAI = async function(text, sourceLang, targetLang, apiKey, 
 
     clearTimeout(timeoutId);
 
-    if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status}`);
-    }
-
     const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error?.message || `OpenAI API error: ${response.status}`);
+    }
     return data.choices[0].message.content.trim();
   } catch (error) {
     clearTimeout(timeoutId);
