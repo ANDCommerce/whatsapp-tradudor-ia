@@ -308,8 +308,17 @@ async function toggleDropdown(show) {
 
   if (show) {
     const rect = button.getBoundingClientRect();
-    dropdown.style.left = `${rect.left - 200}px`;
-    dropdown.style.top = `${rect.bottom + 10}px`;
+    const dropdownWidth = 320;
+    // Align dropdown right edge with button right edge, keeping within viewport
+    let left = rect.right - dropdownWidth;
+    if (left + dropdownWidth > window.innerWidth - 12) {
+      left = window.innerWidth - dropdownWidth - 12;
+    }
+    if (left < 12) {
+      left = 12;
+    }
+    dropdown.style.left = `${left}px`;
+    dropdown.style.top = `${rect.bottom + 8}px`;
     dropdown.style.display = 'block';
     await loadCurrentChatSettings();
   } else {
@@ -1283,6 +1292,9 @@ window.injectHoverTranslateButtons = injectHoverTranslateButtons;
 // Observar troca de conversas e recarregar configurações
 watchChatChanges(() => {
   loadCurrentChatSettings().then(() => {
+    if (window.injectTranslationButton) {
+      window.injectTranslationButton();
+    }
     injectFooterTranslateButton();
     processMessages();
     injectHoverTranslateButtons();

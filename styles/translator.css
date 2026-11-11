@@ -369,3 +369,56 @@
   color: #e9edef;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23aebac1'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
 }
+
+/* Header Translator Button (Top right action bar) */
+#wa-translator-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  vertical-align: middle;
+}
+
+.wa-translator-header-btn-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wa-translator-header-btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  border: none !important;
+  background: transparent !important;
+  cursor: pointer !important;
+  color: var(--icon, #54656f) !important;
+  padding: 8px !important;
+  box-sizing: border-box !important;
+  transition: background-color 0.15s ease, transform 0.1s ease !important;
+  outline: none !important;
+}
+
+.wa-translator-header-btn:hover {
+  background-color: var(--button-bubble-background-hover, rgba(134, 150, 160, 0.1)) !important;
+}
+
+.wa-translator-header-btn:active {
+  background-color: var(--button-bubble-background-active, rgba(134, 150, 160, 0.2)) !important;
+  transform: scale(0.96) !important;
+}
+
+.wa-translator-header-btn svg {
+  display: block;
+  fill: currentColor;
+  width: 24px;
+  height: 24px;
+}
+
+.dark .wa-translator-header-btn {
+  color: var(--icon, #aebac1) !important;
+}
+
